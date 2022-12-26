@@ -55,7 +55,11 @@ app.use((req, res, next) => {
 // });
 
 const authRoutes=require('./routes/auth');
+const usersRoutes=require('./routes/users');
+const productsRoutes=require('./routes/products');
 app.use('/auth', authRoutes);
+app.use('/users', usersRoutes);
+app.use('/products', productsRoutes);
 
 app.get('*', function(req, res) {
     res.redirect('/');

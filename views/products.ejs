@@ -1,0 +1,49 @@
+<%- include('partials/header'); %>
+<%- include('partials/head'); %>
+<!--begin::Content-->
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <!--begin::Subheader-->
+    <div class="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
+        <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+            <!--begin::Info-->
+            <div class="d-flex align-items-center flex-wrap mr-2">
+                <!--begin::Page Title-->
+                <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Mesaj Paketleri</h5>
+                <!--end::Page Title-->
+            </div>
+            <!--end::Info-->
+        </div>
+    </div>
+    <!--end::Subheader-->
+    <!--begin::Entry-->
+    <div class="d-flex flex-column-fluid">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Category-->
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <span class="card-label font-weight-bolder text-dark">Mesaj Paketleri</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <table class="table  table-bordered table-checkable" id="messagePackets">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Foto</th>
+                            <th>Kullanıcı Adı</th>
+                            <th>Cinsiyet</th>
+                            <th>Email</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <!--end::Category-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::Entry-->
+
+    <%- include('partials/footer'); %>

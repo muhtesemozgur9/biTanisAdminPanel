@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/biTanisAdminPanel.iml" filepath="$PROJECT_DIR$/.idea/biTanisAdminPanel.iml" />
+      <module fileurl="file://$USER_HOME$/Desktop/PROJECTS/Poshmall/poshmalladmin/.idea/poshmalladmin.iml" filepath="$USER_HOME$/Desktop/PROJECTS/Poshmall/poshmalladmin/.idea/poshmalladmin.iml" />
       <module fileurl="file://$PROJECT_DIR$/../quicktation_admin/.idea/quicktation_admin.iml" filepath="$PROJECT_DIR$/../quicktation_admin/.idea/quicktation_admin.iml" />
     </modules>
   </component>
