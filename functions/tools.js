@@ -1,4 +1,4 @@
-module.exports.generateID = function generateID(key = "xxxx-xxxxxxxx-xxxx-xxxx") {
+module.exports.generateID = function generateID(key = "xxxxxxxxxxxxxxxxxxxx") {
     var d = new Date().getTime();
     if (Date.now) {
         d = Date.now(); //high-precision timer

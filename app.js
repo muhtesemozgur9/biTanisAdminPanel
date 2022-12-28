@@ -41,18 +41,27 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use((req,res,next)=>{
-//     if(req.session.refreshToken == undefined && req.url === "/")
-//     {
-//         req.url += "auth"
-//     }
-//
-//     else if(req.session.refreshToken != undefined && req.url === "/")
-//     {
-//         req.url += "orders"
-//     }
-//     next();
-// });
+ app.use((req,res,next)=>{
+     if(req.session.hasLogin == undefined && req.url === "/")
+     {
+         req.url += "auth"
+     }
+
+     else if(req.session.hasLogin != undefined && req.url === "/")
+     {
+         req.url += "users"
+     }
+     next();
+ });
+const admin = require("firebase-admin");
+const serviceAccount = require('./config/serviceAccountKey.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://bi-tanis-35f71-default-rtdb.firebaseio.com"
+});
+
+global.admin = admin;
+
 
 const authRoutes=require('./routes/auth');
 const usersRoutes=require('./routes/users');

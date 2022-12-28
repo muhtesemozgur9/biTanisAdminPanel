@@ -1,16 +1,6 @@
 var model = require("../models/model");
 var tools = require("../functions/tools")
 const fs = require('fs');
-const admin = require("firebase-admin");
-const serviceAccount = require('../config/serviceAccountKey.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://bi-tanis-35f71-default-rtdb.firebaseio.com"
-});
-
-
-
-const db = admin.firestore();
 
 exports.usersPage = async (req,res,next)=>{
     var handler={
@@ -23,6 +13,8 @@ exports.usersPage = async (req,res,next)=>{
 };
 
 exports.usersList = async (req,res,next)=> {
+    const db = await admin.firestore();
+
     let response = {
         error : 0,
         errorText:"",
@@ -30,7 +22,7 @@ exports.usersList = async (req,res,next)=> {
     }
     try {
         let usersList = [];
-        const productsRef = db.collection("Users");
+        const productsRef = await db.collection("Users");
         const snapshot = await  productsRef.get();
         snapshot.forEach(doc => {
             usersList.push(doc.data());
@@ -45,6 +37,8 @@ exports.usersList = async (req,res,next)=> {
 }
 
 exports.deleteUser = async (req,res,next)=> {
+    const db = admin.firestore();
+
     let response = {
         error : "0",
         errorText:"",

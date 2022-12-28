@@ -10,6 +10,7 @@
                 <!--begin::Page Title-->
                 <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Mesaj Paketleri</h5>
                 <!--end::Page Title-->
+                <button type="button" data-toggle="modal" data-target="#addProduct" class="btn btn-success font-weight-bolder btn-sm">Yeni Paket Ekle</button>
             </div>
             <!--end::Info-->
         </div>
@@ -27,14 +28,12 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <table class="table  table-bordered table-checkable" id="messagePackets">
+                    <table class="table  table-bordered table-checkable" id="productsTable">
                         <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Foto</th>
-                            <th>Kullanıcı Adı</th>
-                            <th>Cinsiyet</th>
-                            <th>Email</th>
+                            <th>Yabancılara Göster/Türklere Göster</th>
+                            <th>Paket Adı</th>
+                            <th>İşlemler</th>
                         </tr>
                         </thead>
                     </table>
@@ -45,5 +44,81 @@
         <!--end::Container-->
     </div>
     <!--end::Entry-->
+    <div class="modal fade" id="addProduct" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Paketi Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <form onSubmit="return false"  name="addProductForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="foreign">Kime Gösterilecek</label>
+                                    <select name="foreign" id="foreign" class="form-control">
+                                        <option value="turks">Türklere Gösterilecek</option>
+                                        <option value="foreign">Yabancılara Gösterilecek</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="productID">Paket Adı</label>
+                                    <input type="text" class="form-control" name="productID" id="productID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateProduct" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Paketi Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <form onSubmit="return false"  name="updateProductForm" enctype="multipart/form-data">
+                    <input type="hidden" id="docId" name="docId">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="updateForeign">Kime Gösterilecek</label>
+                                    <select name="updateForeign" id="updateForeign" class="form-control">
+                                        <option value="turks">Türklere Gösterilecek</option>
+                                        <option value="foreign">Yabancılara Gösterilecek</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="updateProductID">Paket Adı</label>
+                                    <input type="text" class="form-control" name="updateProductID" id="updateProductID">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">Güncelle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <%- include('partials/footer'); %>
