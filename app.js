@@ -66,9 +66,11 @@ global.admin = admin;
 const authRoutes=require('./routes/auth');
 const usersRoutes=require('./routes/users');
 const productsRoutes=require('./routes/products');
+const reportsRoutes=require('./routes/reports');
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/products', productsRoutes);
+app.use('/reports', reportsRoutes);
 
 app.get('*', function(req, res) {
     res.redirect('/');
