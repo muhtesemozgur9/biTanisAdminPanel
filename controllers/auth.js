@@ -12,16 +12,18 @@ exports.loginPage = async (req,res,next)=>{
 };
 
 exports.login = async (req,res,next)=>{
+    console.log("here =>",req.session.hasLogin);
     var response;
     if(req.body.username === "devtest" && req.body.password === "123123"){
+        req.session.hasLogin = "yes";
         response = {
             error:"0",
-            response:"success"
+            response:"Başarılı"
         }
     }else{
         response = {
             error:"1",
-            errorText:"Wrong Email or Password!"
+            errorText:"Kullanıcı adı şifre yanlış!"
         }
     }
     return res.send(response);

@@ -131,7 +131,7 @@ $(document).ready(async function () {
             Swal.fire({
                 title:"Dikkat",
                 text:rowData.userName+" adlı kullanıcıyı silmek istediğinize emin misiniz?",
-                icon:"warning",
+                icon:"question",
                 confirmButtonText: 'Evet, eminim',
                 cancelButtonText:"Hayır, değilim",
                 showCancelButton: true,
@@ -171,5 +171,46 @@ $(document).ready(async function () {
             })
 
         })
+        $(document).on("submit",'form[name="createBotAccount"]',function(){
+            $("#createBotAccountModal").hide();
+            $(".modal-backdrop").remove();
+            var $data = new FormData(this);
+            addWaitProcess();
+            $.ajax({
+                url: "/users/createBot",
+                data: $data,
+                contentType: false,
+                processData: false,
+                type: "POST",
+                success: function (data) {
+                    removeWaitProcess();
+                    if(data.error === "0"){
+                        usersTable.ajax.reload();
+                        swal.fire({
+                            text: "İşlem başarıyla tamamlandı.",
+                            icon: "success",
+                            buttonsStyling: false,
+                            confirmButtonText: "Tamam",
+                            customClass: {
+                                confirmButton: "btn font-weight-bold btn-light-primary"
+                            }
+                        });
+                    }
+                    else{
+                        swal.fire({
+                            text: data.errorText,
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Tamam",
+                            customClass: {
+                                confirmButton: "btn font-weight-bold btn-light-primary"
+                            }
+                        });
+                    }
+                }
+            });
+        })
     }
+
 });
+

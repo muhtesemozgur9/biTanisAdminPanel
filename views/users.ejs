@@ -10,6 +10,7 @@
                 <!--begin::Page Title-->
                 <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">Kullanıcılar</h5>
                 <!--end::Page Title-->
+                <button type="button" data-toggle="modal" data-target="#createBotAccountModal" class="btn btn-success font-weight-bolder btn-sm">Bot Hesap Ekle</button>
             </div>
             <!--end::Info-->
         </div>
@@ -44,5 +45,100 @@
         <!--end::Container-->
     </div>
     <!--end::Entry-->
+
+    <div class="modal fade" id="createBotAccountModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdrop" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bot Kullanıcı Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i aria-hidden="true" class="ki ki-close"></i>
+                    </button>
+                </div>
+                <form onSubmit="return false"  name="createBotAccount" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="name">İsim Soyisim</label>
+                                    <input type="text" class="form-control" required name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="image">Profil Resmi</label>
+                                    <input type="file" class="form-control" required name="image" id="image">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="gender">Cinsiyet</label>
+                                    <select name="gender" id="gender" class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option value="Female">Kadın</option>
+                                        <option value="Male">Erkek</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="marital">Medeni Durum</label>
+                                    <select name="marital" id="marital" class="form-control">
+                                        <option value="">Seçiniz</option>
+                                        <option value="Evli">Evli</option>
+                                        <option value="Bekar">Bekar</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="foreign">Yabancı mı?</label>
+                                    <select name="foreign" id="foreign" class="form-control">
+                                        <option value="turks">Türk</option>
+                                        <option value="foreign">Yabancı</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="birthday">Doğum Günü</label>
+                                    <input type="date" id="birthday" name="birthday" required class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="school">Okul</label>
+                                    <input type="text" id="school" name="school" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="city">Şehir</label>
+                                    <input type="text" id="city" name="city" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="job">İş</label>
+                                    <input type="text" id="job" name="job" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="bio">Bio</label>
+                                    <textarea name="bio" id="bio" cols="30" rows="5" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary font-weight-bold">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <%- include('partials/footer'); %>

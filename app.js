@@ -55,9 +55,11 @@ app.use((req, res, next) => {
  });
 const admin = require("firebase-admin");
 const serviceAccount = require('./config/serviceAccountKey.json');
+const appConfig = require("./config/appConfig.json");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://bi-tanis-35f71-default-rtdb.firebaseio.com"
+    databaseURL:appConfig.databaseURL,
+    storageBucket: appConfig.storageBucket
 });
 
 global.admin = admin;
@@ -67,10 +69,22 @@ const authRoutes=require('./routes/auth');
 const usersRoutes=require('./routes/users');
 const productsRoutes=require('./routes/products');
 const reportsRoutes=require('./routes/reports');
+const messagesRoutes=require('./routes/messages');
 app.use('/auth', authRoutes);
 app.use('/users', usersRoutes);
 app.use('/products', productsRoutes);
 app.use('/reports', reportsRoutes);
+app.use('/messages', messagesRoutes);
+app.use('/auth/logout',(req,res,next)=>{
+    if (req.session) {
+        req.session.destroy(function(err) {
+            if (err) return console.log(err);
+            else{
+                return res.redirect('/auth');
+            }
+        });
+    }
+});
 
 app.get('*', function(req, res) {
     res.redirect('/');
