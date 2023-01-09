@@ -111,7 +111,9 @@ $(document).ready(async function () {
                     data: null, width: "20%", "render": function (data, type, row) {
                         var html = "";
                         html = "<button class='btn btn-danger btn-icon deleteUser' data-tooltip=\"tooltip\" title=\"Kullanıcıyı Sil\"><i class='fa fa-times'></i></button> "
-
+                        if(row.bot === true){
+                            html += "<a href='/users/messages/"+row.docId+"' class='btn btn-info btn-icon' data-tooltip=\"tooltip\" title=\"Kullanıcı Mesajlarını Görüntüle\"><i class='fa fa-eye'></i></a> "
+                        }
                         return html;
                     }
                 },
@@ -214,3 +216,98 @@ $(document).ready(async function () {
 
 });
 
+
+function showMessageList(docId,username){
+    var myUserId = $("#myUserId").val();
+    $("#docId").val(docId);
+    addWaitProcess();
+    $.post("/users/messages/"+docId,{
+        docId:docId
+    },
+        function(data,status){
+        if(data.error === "0"){
+            removeWaitProcess();
+            var chat = "";
+            for(let i=0;i<data.response.length;i++){
+                let myClass="align-items-start";
+                let bg = "bg-light";
+                let showedName = username;
+                let message = "";
+                if(data.response[i].text !== undefined){
+                    message = data.response[i].text;
+                }
+                if(data.response[i].id === myUserId){
+                    myClass="align-items-end";
+                    bg = "bg-light-success";
+                    showedName = "";
+                }
+                let date = "";
+                if(data.response[i].time !== undefined){
+                    date = toDateTime(data.response[i].time._seconds);
+                    date = date.toISOString();
+                    date = moment(isoDateToHuman(date)).format('DD/MM/YYYY HH:mm');
+                }
+
+                chat += "<div class=\"d-flex flex-column mb-5 "+myClass+"\">\n" +
+                    "<div class=\"d-flex align-items-center\">\n" +
+                    "<div>\n" +
+                    "<a href=\"#\" class=\"text-dark-75 text-hover-primary font-weight-bold font-size-h6\">" + showedName + "</a>\n" +
+                    "<span class=\"text-muted font-size-sm\">" + date + "</span>" +
+                    "</div>\n" +
+                    "</div>\n";
+                chat += "<div class=\"mt-2 rounded p-5 "+bg+" text-dark-50 font-weight-bold font-size-lg text-left max-w-400px\">" + message + "</div>\n";
+                chat += "</div>";
+            }
+            $(".messages").html(chat);
+            $("#userNameArea").html(username)
+        }
+        else{
+            removeWaitProcess();
+            swal.fire({
+                text: data.errorText,
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Tamam",
+                customClass: {
+                    confirmButton: "btn font-weight-bold btn-light-primary"
+                }
+            });
+        }
+    })
+}
+
+function sendMessage(){
+    let message = $("#messageInput").val();
+    let docId = $("#docId").val();
+    let myUserId = $("#myUserId").val();
+    addWaitProcess();
+    $.post("/users/sendMessage",{
+            docId:docId,
+            message:message,
+            myUserId:myUserId
+        },
+        function(data,status){
+            if(data.error === "0"){
+                removeWaitProcess();
+                showMessageList(docId,"-");
+            }
+            else{
+                removeWaitProcess();
+                swal.fire({
+                    text: data.errorText,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "Tamam",
+                    customClass: {
+                        confirmButton: "btn font-weight-bold btn-light-primary"
+                    }
+                });
+            }
+        })
+}
+
+function toDateTime(secs) {
+    var t = new Date(1970, 0, 1); // Epoch
+    t.setSeconds(secs);
+    return t;
+}

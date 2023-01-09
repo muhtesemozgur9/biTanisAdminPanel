@@ -1,0 +1,91 @@
+<%- include('partials/header'); %>
+<%- include('partials/head'); %>
+<!--begin::Content-->
+<div class="content d-flex flex-column flex-column-fluid" id="kt_content" style="margin-top:-60px;">
+    <!--begin::Entry-->
+    <div class="d-flex flex-column-fluid">
+        <!--begin::Container-->
+        <div class="container">
+            <!--begin::Chat-->
+            <div class="d-flex flex-row">
+                <!--begin::Aside-->
+                <div class="flex-row-auto offcanvas-mobile w-250px w-xl-250px" id="kt_chat_aside">
+                    <!--begin::Card-->
+                    <div class="card card-custom">
+                        <!--begin::Body-->
+                        <div class="card-body">
+                            <!--begin:Users-->
+                            <div class="mt-7 scroll scroll-pull" id="messagesUsersItemArea">
+                                <!--begin:User-->
+                                <input type="hidden" id="myUserId" value="<%=myUserId%>">
+                                <input type="hidden" id="docId" value="">
+                                <%
+                                    var userList = JSON.parse(userList);
+                                    for(let i=0;i<userList.length;i++){
+                                %>
+                                    <div class="d-flex align-items-center justify-content-between mb-5">
+                                        <div class="d-flex align-items-center">
+                                            <div class="d-flex flex-column ">
+                                                <p id="userId_<%=userList[i].docId%>" onclick="showMessageList('<%=userList[i].docId%>','<%=userList[i].userName%>')" class="text-dark-75 text-hover-primary font-weight-bold font-size-lg" style="cursor:pointer;margin-bottom:0px!important;"  ><%=userList[i].userName%>
+                                                </p>
+                                                <span class="text-muted"><%=userList[i]['last-message']%></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <%}%>
+                                <!--end:User-->
+                            </div>
+                            <!--end:Users-->
+                        </div>
+                        <!--end::Body-->
+                    </div>
+                    <!--end::Card-->
+                </div>
+                <!--end::Aside-->
+                <!--begin::Content-->
+                <div class="flex-row-fluid ml-lg-12" id="kt_chat_content">
+                    <!--begin::Card-->
+                    <div class="card card-custom">
+                        <!--begin::Header-->
+                        <div class="card-header align-items-center px-4 py-3">
+                            <div class="text-left flex-grow-1">
+                                <!--div class="text-dark-75 font-weight-bold font-size-h6" id="userNameArea">Kullanıcı</div-->
+                            </div>
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Body-->
+                        <div class="card-body">
+                            <!--begin::Scroll-->
+                            <div class="scroll scroll-pull" data-mobile-height="350">
+                                <!--begin::Messages-->
+                                <div class="messages">
+                                </div>
+                                <!--end::Messages-->
+                            </div>
+                            <!--end::Scroll-->
+                        </div>
+                        <!--end::Body-->
+                        <!--begin::Footer-->
+                        <div class="card-footer align-items-center">
+                            <!--begin::Compose-->
+                            <textarea class="form-control border-0 p-0" id="messageInput" rows="3" placeholder="Mesaj giriniz"></textarea>
+                            <div class="d-flex align-items-center justify-content-between mt-5">
+                                <div>
+                                    <button type="button" onclick="sendMessage()" class="btn btn-primary btn-md text-uppercase font-weight-bold chat-send py-2 px-6" >Gönder</button>
+                                </div>
+                            </div>
+                            <!--begin::Compose-->
+                        </div>
+                        <!--end::Footer-->
+                    </div>
+                    <!--end::Card-->
+                </div>
+                <!--end::Content-->
+            </div>
+            <!--end::Chat-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::Entry-->
+    <!--    loaded_image-->
+    <%- include('partials/footer'); %>

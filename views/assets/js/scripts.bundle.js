@@ -9257,7 +9257,7 @@ var KTLayoutChat = function () {
 				return height;
 			}
 		});
-
+/*
 		// attach events
 		KTUtil.on(element, '.card-footer textarea', 'keydown', function(e) {
 			if (e.keyCode == 13) {
@@ -9271,6 +9271,8 @@ var KTLayoutChat = function () {
 		KTUtil.on(element, '.card-footer .chat-send', 'click', function(e) {
 			_handeMessaging(element);
 		});
+
+ */
 	}
 
 	var _handeMessaging = function(element) {

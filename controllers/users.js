@@ -26,7 +26,9 @@ exports.usersList = async (req,res,next)=> {
         const productsRef = await db.collection("Users");
         const snapshot = await  productsRef.get();
         snapshot.forEach(doc => {
-            usersList.push(doc.data());
+            let item = doc.data();
+            item.docId= doc.id;
+            usersList.push(item);
         });
         response.response = usersList
         return res.send(response);
@@ -137,3 +139,106 @@ exports.uploadUser = async (req,res,next) =>{
 
 
 }
+
+
+exports.userMessagePage = async (req,res,next)=>{
+    const db = await admin.firestore();
+    let userList = [];
+    let response = {
+        error : 0,
+        errorText:"",
+        response:[]
+    }
+    try {
+        let usersList = [];
+        const messagesRef = await db.collection("Conversations");
+        const snapshot = await  messagesRef.get();
+        await snapshot.forEach( doc => {
+            let item = doc.data();
+            item.docId = doc.id;
+            usersList.push(item);
+        });
+
+        for(let a=0;a<usersList.length;a++){
+            if(usersList[a].user.indexOf(req.params.docId) !== -1){
+                var userName = "";
+                for(let i=0;i<usersList[a].user.length;i++){
+                    if(req.params.docId !== usersList[a].user[i]){
+                        const db2 = await admin.firestore();
+                        const userRef = await db2.collection("Users").doc(usersList[a].user[i]);
+                        const doc = await userRef.get();
+                        if(doc.exists){
+                            let userItem = doc.data();
+                            userName = userItem.userName;
+                        }
+                    }
+                }
+                usersList[a].userName = userName;
+                userList.push(usersList[a]);
+            }
+
+        }
+    } catch (error) {
+        response.error = 1;
+        response.errorText = error
+        return res.send(response);
+    }
+
+    var handler={
+        // csrfToken: req.csrfToken(),
+        error:req.session.error || false,
+        myUserId:req.params.docId,
+        url: req.originalUrl,
+        userList:JSON.stringify(userList)
+    };
+    delete req.session.error;
+    return res.render('userMessages',handler);
+}
+
+exports.userMessageList = async (req,res,next)=>{
+    const db = await admin.firestore();
+    let response = {
+        error : "0",
+        errorText:"",
+        response:[]
+    }
+    try {
+        let usersList = [];
+        const messagesRef = await db.collection("Conversations/"+req.params.docId+"/mesajlar").orderBy("time","desc");
+        const snapshot = await  messagesRef.get();
+        await snapshot.forEach( doc => {
+            let item = doc.data();
+            item.docId = doc.id;
+            usersList.push(item);
+        });
+        response.response = usersList;
+        return res.send(response);
+    } catch (error) {
+        response.error = "1";
+        response.errorText = error
+        return res.send(response);
+    }
+}
+
+exports.sendMessage = async (req,res,next)=>{
+    const db = await admin.firestore();
+    let response = {
+        error : "0",
+        errorText:"",
+        response:[]
+    }
+    try {
+        let usersList = [];
+        let date = admin.firestore.FieldValue.serverTimestamp()
+        const messagesRef = await db.collection("Conversations/"+req.body.docId+"/mesajlar").doc(tools.generateID());
+        await  messagesRef.set({id:req.body.myUserId,seen:false,text:req.body.message,time:date});
+        response.response = "success";
+        return res.send(response);
+    } catch (error) {
+        response.error = "1";
+        console.log("error =>",error)
+        response.errorText = error
+        return res.send(response);
+    }
+}
+
