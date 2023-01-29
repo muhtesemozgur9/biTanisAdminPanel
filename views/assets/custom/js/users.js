@@ -111,9 +111,6 @@ $(document).ready(async function () {
                     data: null, width: "20%", "render": function (data, type, row) {
                         var html = "";
                         html = "<button class='btn btn-danger btn-icon deleteUser' data-tooltip=\"tooltip\" title=\"Kullanıcıyı Sil\"><i class='fa fa-times'></i></button> "
-                        if(row.bot === true){
-                            html += "<a href='/users/messages/"+row.docId+"' class='btn btn-info btn-icon' data-tooltip=\"tooltip\" title=\"Kullanıcı Mesajlarını Görüntüle\"><i class='fa fa-eye'></i></a> "
-                        }
                         return html;
                     }
                 },
@@ -213,7 +210,139 @@ $(document).ready(async function () {
             });
         })
     }
+    if($("#messageListTable").length > 0){
+        $("#messageListTable").DataTable().destroy();
+        $.fn.dataTable.ext.errMode = 'none';
+        var messageListTable = $("#messageListTable").DataTable({
+            responsive: !0,
+            pageLength: 250,
+            dom: "<'row'<'col-sm-6 text-left'><'col-sm-6 text-right'B>>\n\t\t\t<'row'<'col-sm-12'tr>>\n\t\t\t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'p>>",
 
+            ajax: {
+                url: "/users/messageList",
+                type: "POST",
+                data: function (d) {
+                    //d._csrf = csrf;
+                },
+                dataType: 'json',
+                error: function (jqXHR, textStatus, errorThrown) {
+                    // $('#errorText').show().find(".m-alert__text span").html(errorThrown);
+                    swal.fire({
+                        text: errorThrown,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok",
+                        customClass: {
+                            confirmButton: "btn font-weight-bold btn-light-primary"
+                        }
+                    }).then(function () {
+                    });
+                    removeWaitProcess();
+                },
+                beforeSend: function () {
+                    addWaitProcess();
+                },
+                complete: function () {
+                    removeWaitProcess();
+                },
+                dataSrc: function (json) {
+                    console.log("JSON : ", json);
+
+                    if (typeof json.error != 'undefined' && json.error != "1") {
+
+                        if (typeof json.response != 'undefined') {
+                            return json.response;
+                        } else {
+                            return false;
+                        }
+                    }
+                    else {
+
+                        var errText = "unknown_error";
+
+                        (typeof json.errorText != 'undefined') ? errText = json.errorText : null;
+
+                        swal.fire({
+                            text: errText,
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok",
+                            customClass: {
+                                confirmButton: "btn font-weight-bold btn-light-primary"
+                            }
+                        }).then(function () {
+                        });
+                        return false;
+                    }
+                }
+            },
+            initComplete: function (settings, json) {
+
+            },
+            buttons: [],
+            paging: false,
+            info: false,
+            ordering: false,
+            processing: false,
+            columns: [
+                {
+                    data: null, width: "30%", "render": function (data, type, row) {
+                        var html = "";
+                        if (row.sender !== undefined) {
+                            html = row.sender;
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: null, width: "20%", "render": function (data, type, row) {
+                        var html = "";
+                        if (row.receiver !== undefined) {
+                            html = row.receiver;
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: null, width: "20%", "render": function (data, type, row) {
+                        var html = "";
+                        if (row["last-message"] !== undefined) {
+                            html = row["last-message"];
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: null, width: "20%", "render": function (data, type, row) {
+                        var html = "";
+                        if(row["last-time"] !== undefined){
+                            let date = toDateTime(row["last-time"]._seconds);
+                            date = date.toISOString();
+                            html = moment(isoDateToHuman(date)).format('DD/MM/YYYY HH:mm');
+                        }
+
+                        return html;
+                    }
+                },
+                {
+                    data: null, width: "20%", "render": function (data, type, row) {
+                        var html = "";
+                        if(row.bot === true){
+                            html += "<a href='/users/messages/"+row.docId+"/"+row.user[0]+"/"+row.receiver+"' class='btn btn-info btn-icon' data-tooltip=\"tooltip\" title=\"Kullanıcı Mesajlarını Görüntüle\"><i class='fa fa-eye'></i></a> "
+                        }
+                        return html;
+                    }
+                },
+            ],
+        });
+    }
+
+    if($("#myUserId").length  > 0){
+        showMessageList($("#docId").val(),$("#receiverName").val());
+    }
 });
 
 
@@ -280,30 +409,59 @@ function sendMessage(){
     let message = $("#messageInput").val();
     let docId = $("#docId").val();
     let myUserId = $("#myUserId").val();
-    addWaitProcess();
-    $.post("/users/sendMessage",{
-            docId:docId,
-            message:message,
-            myUserId:myUserId
-        },
-        function(data,status){
-            if(data.error === "0"){
-                removeWaitProcess();
-                showMessageList(docId,"-");
+    let controller = 0;
+    if(docId === undefined || docId === "" || docId === null){
+        swal.fire({
+            text: "Mesaj yollamak istediğiniz kişiyi seçmelisiniz",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Tamam",
+            customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
             }
-            else{
-                removeWaitProcess();
-                swal.fire({
-                    text: data.errorText,
-                    icon: "error",
-                    buttonsStyling: false,
-                    confirmButtonText: "Tamam",
-                    customClass: {
-                        confirmButton: "btn font-weight-bold btn-light-primary"
-                    }
-                });
+        });
+        controller++;
+    }
+    if(message === undefined || message === "" || message === null){
+        swal.fire({
+            text: "Boş mesaj gönderemezsiniz!",
+            icon: "error",
+            buttonsStyling: false,
+            confirmButtonText: "Tamam",
+            customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
             }
-        })
+        });
+        controller++;
+    }
+    if(controller === 0){
+        addWaitProcess();
+        $.post("/users/sendMessage",{
+                docId:docId,
+                message:message,
+                myUserId:myUserId
+            },
+            function(data,status){
+                if(data.error === "0"){
+                    removeWaitProcess();
+                    $("#messageInput").val("");
+                    showMessageList(docId,"-");
+                }
+                else{
+                    removeWaitProcess();
+                    swal.fire({
+                        text: data.errorText,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Tamam",
+                        customClass: {
+                            confirmButton: "btn font-weight-bold btn-light-primary"
+                        }
+                    });
+                }
+            })
+    }
+
 }
 
 function toDateTime(secs) {

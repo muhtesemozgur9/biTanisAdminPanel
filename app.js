@@ -8,7 +8,7 @@ const redisStore = require('connect-redis')(session);
 const client  = redis.createClient();
 const busboyBodyParser=require('busboy-body-parser');
 
-const port = 3000;
+const port = 7000;
 
 app.use(cookieParser());
 app.use(bodyParser());

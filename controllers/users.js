@@ -142,6 +142,18 @@ exports.uploadUser = async (req,res,next) =>{
 
 
 exports.userMessagePage = async (req,res,next)=>{
+    var handler={
+        // csrfToken: req.csrfToken(),
+        error:req.session.error || false,
+        conversationId:req.params.docId,
+        myUserId:req.params.senderId,
+        receiverName:req.params.receiverName,
+        url: req.originalUrl,
+    };
+    delete req.session.error;
+    return res.render('userMessages',handler);
+}
+exports.userMessageListPage = async (req,res,next)=>{
     const db = await admin.firestore();
     let userList = [];
     let response = {
@@ -158,7 +170,7 @@ exports.userMessagePage = async (req,res,next)=>{
             item.docId = doc.id;
             usersList.push(item);
         });
-
+/*
         for(let a=0;a<usersList.length;a++){
             if(usersList[a].user.indexOf(req.params.docId) !== -1){
                 var userName = "";
@@ -178,6 +190,8 @@ exports.userMessagePage = async (req,res,next)=>{
             }
 
         }
+
+        */
     } catch (error) {
         response.error = 1;
         response.errorText = error
@@ -192,7 +206,53 @@ exports.userMessagePage = async (req,res,next)=>{
         userList:JSON.stringify(userList)
     };
     delete req.session.error;
-    return res.render('userMessages',handler);
+    return res.render('userMessagesList',handler);
+}
+exports.userMessageListPost = async (req,res,next)=>{
+    const db = await admin.firestore();
+    let response = {
+        error : 0,
+        errorText:"",
+        response:[]
+    }
+    try {
+        let usersList = [];
+        const messagesRef = await db.collection("Conversations").where("bot","==",true).where("isAnswered","==",1);
+        const snapshot = await  messagesRef.get();
+        await snapshot.forEach( doc => {
+            let item = doc.data();
+            item.docId = doc.id;
+            usersList.push(item);
+        });
+/*
+        for(let a=0;a<usersList.length;a++){
+            if(usersList[a].user.indexOf(req.params.docId) !== -1){
+                var userName = "";
+                for(let i=0;i<usersList[a].user.length;i++){
+                    if(req.params.docId !== usersList[a].user[i]){
+                        const db2 = await admin.firestore();
+                        const userRef = await db2.collection("Users").doc(usersList[a].user[i]);
+                        const doc = await userRef.get();
+                        if(doc.exists){
+                            let userItem = doc.data();
+                            userName = userItem.userName;
+                        }
+                    }
+                }
+                usersList[a].userName = userName;
+                userList.push(usersList[a]);
+            }
+
+        }
+
+        */
+        response.response = usersList;
+        return res.send(response);
+    } catch (error) {
+        response.error = 1;
+        response.errorText = error
+        return res.send(response);
+    }
 }
 
 exports.userMessageList = async (req,res,next)=>{
@@ -232,6 +292,8 @@ exports.sendMessage = async (req,res,next)=>{
         let date = admin.firestore.FieldValue.serverTimestamp()
         const messagesRef = await db.collection("Conversations/"+req.body.docId+"/mesajlar").doc(tools.generateID());
         await  messagesRef.set({id:req.body.myUserId,seen:false,text:req.body.message,time:date});
+        const mrf = await db.collection("Conversations").doc(req.body.docId);
+        await  mrf.set({isAnswered:0});
         response.response = "success";
         return res.send(response);
     } catch (error) {
